@@ -1,6 +1,11 @@
 spring:
   application:
     name: FlightBooking_API
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+    retry:
+      max-attempts: 1
   datasource:
     url: jdbc:mysql://localhost:3306/flight_booking_db?createDatabaseIfNotExist=true&useSSL=true&serverTimezone=UTC
     username: root
