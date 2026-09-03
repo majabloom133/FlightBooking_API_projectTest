@@ -19,13 +19,13 @@ public class FlightTools {
     }
 
     // Exposes this method as an AI tool for quering available flights
-    @Tool(description = "Get all available flights that are open for booking")
+    @Tool(description = "Get all available flights that are open for booking. Returns numeric flight ID, flight number, departure time, arrival time, destination, and price.")
     public List<AvailableFlightDTO> getAvailableFlights() {
         return flightBookingService.findAvailableFlights();
     }
 
     // Exposes this method as an AI tool for reserving a seat on a flight
-    @Tool(description = "Book a seat on a flight using flight ID, passenger name, or passenger email")
+    @Tool(description = "Book a seat on a flight using the numberic flight ID, passenger full name, and passenger email address.")
     public FlightBookingDTO bookFlight(Long flightId, String passengerName, String passengerEmail) {
         BookFlightRequestDTO request = new BookFlightRequestDTO(passengerName, passengerEmail);
         return flightBookingService.bookFlight(flightId, request);

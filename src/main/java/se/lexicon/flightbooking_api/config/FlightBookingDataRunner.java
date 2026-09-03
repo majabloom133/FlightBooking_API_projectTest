@@ -35,7 +35,7 @@ public class FlightBookingDataRunner implements CommandLineRunner {
                 .departureTime(LocalDateTime.now().plusDays(2))
                 .arrivalTime(LocalDateTime.now().plusDays(2).plusHours(3))
                 .status(FlightStatus.AVAILABLE)
-                .destination("Paris")
+                .destination("London")
                 .price(249.99)
                 .build();
 
