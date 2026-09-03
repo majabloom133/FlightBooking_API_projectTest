@@ -1,6 +1,7 @@
 package se.lexicon.flightbooking_api.controller;
 
 // Import Spring Web annotation for REST endpoints
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,7 +40,7 @@ public class ChatController {
     }
 
     @PostMapping
-    public ChatResponseDTO chat(@RequestBody ChatRequestDTO request) {
+    public ChatResponseDTO chat(@Valid @RequestBody ChatRequestDTO request) {
         String chatId = (request.chatId() != null && !request.chatId().isBlank())
                 ? request.chatId()
                 : UUID.randomUUID().toString();
