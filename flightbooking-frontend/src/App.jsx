@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import './App.css';
+import ReactMarkdown from 'react-markdown';
 
 // Main chatbot component for lexicon airline AI assistant
 function App() {
@@ -60,7 +61,11 @@ function App() {
           {messages.map((msg, index) => (
               <div key={index} className={`message-bubble ${msg.sender}`}>
                 <strong>{msg.sender === 'user' ? 'You' : 'AI Assistant'}:</strong>
-                <p>{msg.text}</p>
+                {msg.sender === 'ai' ? (
+                    <ReactMarkdown>{msg.text}</ReactMarkdown>
+                ) : (
+                    <p>{msg.text}</p>
+                )}
               </div>
           ))}
           {loading && <div className="message-bubble ai loading ">Thinking...</div>}
