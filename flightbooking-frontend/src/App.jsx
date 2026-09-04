@@ -16,40 +16,57 @@ function App() {
 
   const [loading, setLoading] = useState(false);
 
-  const sendMessage = async (e) => {
-    e.preventDefault();
-    if (!input.trim()) return;
+  const suggestedPrompts = [
+      "✈️ Show available flights",
+      "🌍 What destinations are available?",
+      "💰 Find flights under 200 USD",
+      "📋 Show my bookings"
+  ];
 
-    const userMessage = {sender: 'user', text: input};
-    setMessages((prev) => [...prev, userMessage]);
+const handlePromptClick = (promptText) => {
+  const cleanText = promptText.replace(/^[^\s]+\s*/, '');
+  sendChatMessage(cleanText);
+};
 
-    const currentInput = input;
-    setInput('');
-    setLoading(true);
+const sendMessage = async (e) => {
+  e.preventDefault();
+  if (!input.trim() || loading) return;
 
-    try {
-      const response = await axios.post('http://localhost:8080/api/chat', {
-        message: currentInput,
-        chatId: chatId
-      });
+  const currentInput = input;
+  setInput('');
+  await sendChatMessage(currentInput);
+};
 
-      if (response.data.chatId) {
-        setChatId(response.data.chatId);
-      }
+const sendChatMessage = async (messageText) => {
+  if (!messageText.trim() || loading) return;
 
-      setMessages((prev) => [
-          ...prev,
-        { sender: 'ai', text: response.data.response }
-      ]);
-    } catch (error) {
-      setMessages((prev) => [
-          ...prev,
-        { sender: 'ai', text: 'Sorry, I could not connect to the server. Please ensure backend is running.' }
-      ]);
-    } finally {
-      setLoading(false);
+  const userMessage = { sender: 'user', text: messageText };
+  setMessages((prev) => [...prev, userMessage]);
+  setLoading(true);
+
+  try {
+    const response = await axios.post('http://localhost:8080/api/chat', {
+      message: messageText,
+      chatId: chatId
+    });
+
+    if (response.data.chatId) {
+      setChatId(response.data.chatId);
     }
-  };
+
+    setMessages((prev) => [
+        ...prev,
+      { sender: 'ai', text: response.data.response }
+    ]);
+  } catch (error) {
+    setMessages((prev) => [
+        ...prev,
+      { sender: 'ai', text: 'Sorry, I could not connect to the server. Please ensure backend is running.'}
+    ]);
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
       <div className="chat-container">
@@ -68,7 +85,30 @@ function App() {
                 )}
               </div>
           ))}
-          {loading && <div className="message-bubble ai loading ">Thinking...</div>}
+          {loading && (
+              <div className="message-bubble ai loading ">
+            <div className="typing-indicator">
+              <div className="typing-dot"></div>
+              <div className="typing-dot"></div>
+              <div className="typing-dot"></div>
+            </div>
+          </div>
+          )}
+        </div>
+
+
+        <div className="suggested-prompts">
+          {suggestedPrompts.map((prompt, index) => (
+              <button
+              key={index}
+              type="button"
+              className="prompt-chip"
+              onClick={() => handlePromptClick(prompt)}
+              disabled={loading}
+              >
+                {prompt}
+              </button>
+          ))}
         </div>
 
         <form className="chat-input-form" onSubmit={sendMessage}>
@@ -77,8 +117,9 @@ function App() {
             placeholder="Ask about flights, book or cancel..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            disabled={loading}
             />
-          <button type="submit" disabled={loading}>Send</button>
+          <button type="submit" disabled={loading || !input.trim()}>Send</button>
         </form>
       </div>
   );
