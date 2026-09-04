@@ -18,4 +18,10 @@ public interface FlightBookingService {
     List<AvailableFlightDTO> findAvailableFlights();
 
     List<FlightBookingDTO> findBookingsByEmail(String email);
+
+    // Filter available flights by maximum price
+    List<AvailableFlightDTO> findAvailableFlightsByMaxPrice(Double maxPrice);
+
+    // Get a list of all distinct available destinations
+    List<String> findAvailableDestinations();
 }

@@ -1,5 +1,6 @@
 package se.lexicon.flightbooking_api.service;
 
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -86,4 +87,22 @@ public class FlightBookingServiceImpl implements FlightBookingService {
                 .collect(Collectors.toList());
     }
 
+    // Fetch available flights filtered by maximum price threshold
+    @Override
+    public List<AvailableFlightDTO> findAvailableFlightsByMaxPrice(Double maxPrice) {
+        return flightBookingRepository.findAll().stream()
+                .filter(f -> f.getStatus() == FlightStatus.AVAILABLE)
+                .filter(f -> f.getPrice() <= maxPrice)
+                .map(mapper::toAvailableFlightDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<String> findAvailableDestinations() {
+        return flightBookingRepository.findAll().stream()
+                .filter(f -> f.getStatus() == FlightStatus.AVAILABLE)
+                .map(FlightBooking::getDestination)
+                .distinct()
+                .collect(Collectors.toList());
+    }
 }
