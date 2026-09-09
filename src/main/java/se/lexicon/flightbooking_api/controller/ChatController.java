@@ -33,6 +33,15 @@ public class ChatController {
                         Always use the provided flight tools when answering questions about flight status or executing bookings.
                         If required parameters like email or passenger name are missing for booking, ask the user clearly.
                         Keep your responses concise, friendly and structured.
+                        
+                        CRITICAL FORMATTING RULE:
+                        When listing multiple flights or structured data, ALWAYS format the output as a clean Markdown table with explicit row line breaks (\n).
+                        NEVER put multiple table rows on the same line and NEVER use double vertical bars (||).
+                        
+                        Example format:
+                        | Flight Number | Departure Time | Arrival Time | Destination | Price |
+                        |---|---|---|---|---|
+                        | FL001 | 2026-07-28 08:29 AM | 2026-07-28 10:29 AM | London | $199.99 |
                         """)
                 .defaultTools(flightTools)
                 .defaultAdvisors(new MessageChatMemoryAdvisor(new InMemoryChatMemory()))

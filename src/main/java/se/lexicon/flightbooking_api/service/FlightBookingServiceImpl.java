@@ -16,7 +16,6 @@ import se.lexicon.flightbooking_api.mapper.FlightBookingMapper;
 import se.lexicon.flightbooking_api.repository.FlightBookingRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -26,21 +25,28 @@ public class FlightBookingServiceImpl implements FlightBookingService {
     private final FlightBookingRepository flightBookingRepository;
     private final FlightBookingMapper mapper;
 
-
     @Override
     public FlightBookingDTO bookFlight(Long flightId, BookFlightRequestDTO bookingRequest) {
-        FlightBooking flight = flightBookingRepository.findById(flightId)
+        FlightBooking originalFlight = flightBookingRepository.findById(flightId)
                 .orElseThrow(() -> new ResourceNotFoundException("Flight not found"));
 
-        if (flight.getStatus() != FlightStatus.AVAILABLE) {
-            throw new FlightBookingException("Flight is not available");
+        FlightBooking flightToBook = originalFlight;
+
+        // If the requested seat is already booked, find the next available seat for the same destination and departure
+        if (originalFlight.getStatus() != FlightStatus.AVAILABLE) {
+            flightToBook = flightBookingRepository.findByStatus(FlightStatus.AVAILABLE).stream()
+                    .filter(f -> f.getDestination().equalsIgnoreCase(originalFlight.getDestination()))
+                    .filter(f -> f.getPrice().equals(originalFlight.getPrice()))
+                    .findFirst()
+                    .orElseThrow(() -> new FlightBookingException("There are no more available seats on this flight"));
         }
 
-        flight.setPassengerName(bookingRequest.passengerName());
-        flight.setPassengerEmail(bookingRequest.passengerEmail());
-        flight.setStatus(FlightStatus.BOOKED);
+        // Assign passenger details to the available seat
+        flightToBook.setPassengerName(bookingRequest.passengerName());
+        flightToBook.setPassengerEmail(bookingRequest.passengerEmail());
+        flightToBook.setStatus(FlightStatus.BOOKED);
 
-        FlightBooking savedFlight = flightBookingRepository.save(flight);
+        FlightBooking savedFlight = flightBookingRepository.save(flightToBook);
         return mapper.toDTO(savedFlight);
     }
 
