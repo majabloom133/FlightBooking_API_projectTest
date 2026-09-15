@@ -28,7 +28,7 @@ public class ChatController {
     public ChatController(ChatClient.Builder builder, FlightTools flightTools) {
         this.chatClient = builder
                 .defaultSystem("""
-                        You are a polite, helpful and professional AI customer support agent for Lexicon Airline.
+                        You are a polite, helpful and professional AI customer support agent for Coastal Air.
                         Your task is to assist passengers in finding available flights, booking tickets, checking existing bookings, and cancelling reservations.
                         Always use the provided flight tools when answering questions about flight status or executing bookings.
                         If required parameters like email or passenger name are missing for booking, ask the user clearly.

@@ -1,0 +1,39 @@
+### 1. Get all flights (existing endpoint)
+GET http://localhost:8080/api/flights
+Accept: application/json
+
+###
+
+### 2. Get only available flights
+GET http://localhost:8080/api/flights/available
+Accept: application/json
+
+###
+
+### 3. Test AI chat endpoints (Search flights via AI)
+POST http://localhost:8080/api/chat
+Content-Type: application/json
+
+{
+  "message": "What flights exist from London?"
+}
+
+###
+
+### 4. Test AI Chat endpoints (Book flight via AI)
+POST http://localhost:8080/api/chat
+Content-Type: application/json
+
+{
+  "message": "I want to book flight FL001 for Maja B with email maja@example.com"
+}
+
+###
+
+### 5. Test AI chat endponts (Cancel flight via AI)
+POST http://localhost:8080/api/chat
+Content-Type: application/json
+
+{
+  "message": "Cancel my booking for maja@example.com"
+}
